@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/cube.fbx</File>
+    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Ocean.dds</File>
+    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Skybox.fx</File>
+    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/sphere.fbx</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
