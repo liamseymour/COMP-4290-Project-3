@@ -32,6 +32,12 @@
 /processorParam:TextureFormat=Compressed
 /build:cube.fbx
 
+#begin Directional.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Directional.fx
+
 #begin Ocean.dds
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -43,6 +49,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Ocean.dds
+
+#begin Simple.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Simple.fx
 
 #begin Skybox.fx
 /importer:EffectImporter
