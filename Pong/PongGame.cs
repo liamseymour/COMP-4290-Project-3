@@ -81,7 +81,8 @@ namespace Pong
             // Shapes
             shapes = new Hashtable();
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
-                new Color(1f, 1f, 1f, 1f), (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
+                new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
+            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1, 1, 1, 1), 1, new Vector3(0, 1, 0), null));
 
         }
 
@@ -104,7 +105,7 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds);
 
             base.Update(gameTime);
         }
@@ -118,6 +119,7 @@ namespace Pong
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             ((Skybox)shapes["skybox"]).Draw(view, projection, cameraPosition);
+            ((Ball)shapes["ball"]).Draw(view, projection);
 
             base.Draw(gameTime);
         }

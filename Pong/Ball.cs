@@ -11,9 +11,14 @@ namespace Pong
     public class Ball : Shape
     {
         Vector3 velocity { get; set; }
-        public Ball(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, Vector3 velocity, Effect effect) : base(graphics, model, position, color, effect)
+        public Ball(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, Vector3 velocity, Effect effect) : base(graphics, model, position, color, scale, effect)
         {
             this.velocity = velocity;
+        }
+
+        public void Update(float elapsedMilliseconds)
+        {
+            position += elapsedMilliseconds/1000 * velocity;
         }
     }
 }

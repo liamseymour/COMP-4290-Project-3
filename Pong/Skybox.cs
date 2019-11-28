@@ -14,7 +14,7 @@ namespace Pong
     {
         TextureCube texture { get; set; }
 
-        public Skybox(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, TextureCube texture, Effect effect) : base(graphics, model, position, color, effect)
+        public Skybox(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, TextureCube texture, Effect effect) : base(graphics, model, position, color, scale, effect)
         {
             this.texture = texture;
         }
@@ -33,7 +33,7 @@ namespace Pong
                 foreach (ModelMeshPart part in mesh.MeshParts)
                 {
                     part.Effect = effect;
-                    effect.Parameters["World"].SetValue(Matrix.CreateScale(500f) * Matrix.CreateTranslation(cameraPosition));
+                    effect.Parameters["World"].SetValue(Matrix.CreateScale(this.scale) * Matrix.CreateTranslation(cameraPosition));
                     effect.Parameters["View"].SetValue(view);
                     effect.Parameters["Projection"].SetValue(projection);
                     effect.Parameters["Camera"].SetValue(cameraPosition);
