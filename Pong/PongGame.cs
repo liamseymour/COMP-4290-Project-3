@@ -90,12 +90,12 @@ namespace Pong
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
                 new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
             shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1, 1, 1, 1), 1/3f, new Vector3(0, 0, 10), null));
-            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), 1, fieldDimentions, (Effect)effects["simple"]));
+            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), .5f, fieldDimentions, null));
             Vector3 paddleDimentions = new Vector3(2, 2, .2f);
             shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, fieldDimentions.Z / 2 + paddleDimentions.Z / 2), 
-                new Color(1, 1, 1, 1), 1, paddleDimentions, (Effect)effects["directional"]));
+                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
             shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, -fieldDimentions.Z / 2 -paddleDimentions.Z / 2),
-                new Color(1, 1, 1, 1), 1, paddleDimentions, (Effect)effects["directional"]));
+                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
 
         }
 
@@ -151,7 +151,7 @@ namespace Pong
             view = Matrix.CreateLookAt(cameraPosition, cameraPosition + newForward, newUp);
             /* ||||||| END TEMP CAMERA CONTROLS ||||||| */
 
-            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds);
+            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions);
 
             base.Update(gameTime);
         }
