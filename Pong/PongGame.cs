@@ -12,11 +12,6 @@ namespace Pong
     {
         private Vector3 fieldDimentions = new Vector3(20, 20, 40);
 
-        Vector3 cameraPosition = new Vector3(0, 0, 50);
-        Vector3 cameraUp = new Vector3(0, 1, 0);
-        Vector3 cameraForward = new Vector3(0, 0, -1);
-        Vector3 cameraRight = new Vector3(1, 0, 0);
-
         private Hashtable shapes; // Reference for shapes i.e. all objects composing the game. 
         private Hashtable models; // Model reference
         private Hashtable textures; // Texture reference
@@ -28,11 +23,10 @@ namespace Pong
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-
-        /* ||||||| TEMP CAMERA CONTROLS ||||||| */
+        // Camera
         float yaw = 0; // angle that camera has rotated on the y-axis
-        float pitch = 0; // angle that camera has rotated on the x-axis
-        /* ||||||| END TEMP CAMERA CONTROLS ||||||| */
+        float radius = 40f;
+        Vector3 cameraPosition;
 
         public PongGame()
         {
@@ -53,11 +47,7 @@ namespace Pong
         /// </summary>
         protected override void Initialize()
         {
-            // Camera
-            cameraPosition = new Vector3(0, 0, 50);
-            cameraForward = -Vector3.UnitZ;
-            cameraUp = Vector3.UnitY;
-
+            cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
         }
 
@@ -118,38 +108,21 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            /* ||||||| TEMP CAMERA CONTROLS ||||||| */
             // Camera rotation using arrow keys
-            float rotationFactor = 0.02f; // Rotation "sensitivity"
+            float rotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
+            float zoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                pitch += rotationFactor;
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                pitch -= rotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
                 yaw -= rotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 yaw += rotationFactor;
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                radius = MathHelper.Clamp(radius - zoomFactor, 10, 150);
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                radius = MathHelper.Clamp(radius + zoomFactor, 10, 150);
 
-            // Apply Rotations
-            Matrix cameraRotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, 0);
-
-            Vector3 newForward = Vector3.Transform(cameraForward, cameraRotation);
-            Vector3 newUp = Vector3.Transform(cameraUp, cameraRotation);
-            Vector3 newRight = Vector3.Transform(cameraRight, cameraRotation);
-
-            // Movement on WASD
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(newForward));
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(-newForward));
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(-newRight));
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(newRight));
-
-            view = Matrix.CreateLookAt(cameraPosition, cameraPosition + newForward, newUp);
-            /* ||||||| END TEMP CAMERA CONTROLS ||||||| */
+            cameraPosition = new Vector3((float)(radius * System.Math.Cos(yaw)), 0, (float)(radius * System.Math.Sin(yaw)));
+            view = Matrix.CreateLookAt(cameraPosition, new Vector3(0), Vector3.UnitY);
 
             ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions);
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>Z:/COMP 4290/COMP-4290-Project-3/Pong/Content/Directional.fx</SourceFile>
-  <SourceTime>2019-12-03T14:40:30.6516719-05:00</SourceTime>
-  <DestFile>Z:/COMP 4290/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Directional.xnb</DestFile>
-  <DestTime>2019-12-03T14:47:23.640039-05:00</DestTime>
+  <SourceFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Directional.fx</SourceFile>
+  <SourceTime>2019-12-03T14:32:44.7379906-05:00</SourceTime>
+  <DestFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Directional.xnb</DestFile>
+  <DestTime>2019-12-04T12:45:34.512047-05:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2018-12-08T11:35:54-05:00</ImporterTime>
   <Processor>EffectProcessor</Processor>
