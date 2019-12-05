@@ -10,16 +10,40 @@ namespace Pong
 {
     public class Ball : Shape
     {
-        Vector3 velocity { get; set; }
+        private Vector3 velocity;
+        public Vector3 Velocity
+        {
+            get
+            {
+                return velocity;
+            }
+            set
+            {
+                speed = value.X + value.Y + value.Z;
+                velocity = value;
+            }
+        }
+        float speed;
         float radius;
         public Ball(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, Vector3 velocity, Effect effect) : base(graphics, model, position, color, scale, effect)
         {
             this.velocity = velocity;
             this.radius = scale;
+            this.speed = velocity.X + velocity.Y + velocity.Z;
         }
 
-        public void Update(float elapsedMilliseconds, Vector3 fieldDimentions)
+        /// <summary>
+        /// Returns whether or not the ball has gone out of bounds.
+        /// </summary>
+        /// <param name="elapsedMilliseconds"></param>
+        /// <param name="fieldDimentions"></param>
+        /// <param name="paddleDimentions"></param>
+        /// <param name="playerPaddlePosition"></param>
+        /// <param name="enemyPaddlePosition"></param>
+        /// <returns></returns>
+        public bool Update(float elapsedMilliseconds, Vector3 fieldDimentions, Vector3 paddleDimentions, Vector3 playerPaddlePosition, Vector3 enemyPaddlePosition)
         {
+            bool outOfBounds = false;
             Vector3 deltaPosition = elapsedMilliseconds / 1000 * velocity;
             float buffer = .2f;
             // Detect collisions
@@ -29,11 +53,36 @@ namespace Pong
             if (position.Y + deltaPosition.Y + radius > fieldDimentions.Y / 2 - buffer || position.Y + deltaPosition.Y - radius < -fieldDimentions.Y / 2 + buffer)
                 velocity = Vector3.Multiply(velocity, new Vector3(1, -1, 1));
 
+            // Here we need to check if the ball hit the paddle and if it did how to update it's velocity
             if (position.Z + deltaPosition.Z + radius > fieldDimentions.Z / 2 - buffer || position.Z + deltaPosition.Z - radius < -fieldDimentions.Z / 2 + buffer)
-                velocity = Vector3.Multiply(velocity, new Vector3(1, 1, -1));
+            {
+                // Who's paddle is relavent to check?
+                // We can tell by checking what side the ball is on
+                Vector3 paddlePosition;
+                if (position.Z > 0) // AI
+                    paddlePosition = enemyPaddlePosition;
+                else // Player
+                    paddlePosition = playerPaddlePosition;
+
+                float deltaX = position.X - paddlePosition.X;
+                float deltaY = position.Y - paddlePosition.Y;
+
+                if (deltaX >= -paddleDimentions.X / 2f && deltaX <= paddleDimentions.X / 2f
+                     && deltaY >= -paddleDimentions.Y / 2f && deltaY <= paddleDimentions.Y / 2f)
+                {
+                    Vector3 direction = Vector3.Normalize(velocity);
+                    direction += new Vector3(deltaX, deltaY, 0);
+                    direction = Vector3.Normalize(direction);
+                    velocity = direction * speed;
+                    velocity = Vector3.Multiply(velocity, new Vector3(1, 1, -1));
+                }
+                else
+                    outOfBounds = true;
+            }
 
             deltaPosition = elapsedMilliseconds / 1000 * velocity;
             position += deltaPosition;
+            return outOfBounds;
         }
 
 
