@@ -108,18 +108,28 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Gamepad camera controlls
+            float gamePadRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
+            float gamePadZoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
+            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+                float x = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X;
+                float y = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y;
+                yaw += gamePadRotationFactor * x;
+                radius = MathHelper.Clamp(radius - gamePadZoomFactor * y, 10, 150);
+            }
             // Camera rotation using arrow keys
-            float rotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
-            float zoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
+            float keybRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
+            float keybZoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                yaw -= rotationFactor;
+                yaw -= keybRotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                yaw += rotationFactor;
+                yaw += keybRotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                radius = MathHelper.Clamp(radius - zoomFactor, 10, 150);
+                radius = MathHelper.Clamp(radius - keybZoomFactor, 10, 150);
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                radius = MathHelper.Clamp(radius + zoomFactor, 10, 150);
+                radius = MathHelper.Clamp(radius + keybZoomFactor, 10, 150);
 
             cameraPosition = new Vector3((float)(radius * System.Math.Cos(yaw)), 0, (float)(radius * System.Math.Sin(yaw)));
             view = Matrix.CreateLookAt(cameraPosition, new Vector3(0), Vector3.UnitY);
