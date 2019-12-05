@@ -24,19 +24,25 @@ namespace Pong
         SpriteBatch spriteBatch;
 
         // Camera
-        float yaw = 0; // angle that camera has rotated on the y-axis
-        float radius = 40f;
+        float yaw; // angle that camera has rotated on the y-axis
+        float radius;
         Vector3 cameraPosition;
+
+        // Screen
+        int defaultWidth = 800;
+        int defaultHeight = 450;
 
         public PongGame()
         {
+            // Graphics
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             graphics.PreferMultiSampling = true;
-            // TODO Dynamic Screen dimentions
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+
+            // Camera
+            yaw = 0;
+            radius = 40f;
         }
 
         /// <summary>
@@ -47,8 +53,19 @@ namespace Pong
         /// </summary>
         protected override void Initialize()
         {
+            int screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
+            graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.ApplyChanges();
+
+            // Matrix data
+            view = Matrix.CreateLookAt(new Vector3(0, 0, 50), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90), (float)screenWidth/ screenHeight, 0.01f, 1000f);
+            
         }
 
         /// <summary>
@@ -108,6 +125,38 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Toggle fullscreen
+            if(Keyboard.GetState().IsKeyDown(Keys.F) || 
+                (GamePad.GetState(PlayerIndex.One).IsConnected && GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed))
+            {
+                int screenWidth;
+                int screenHeight;
+                // I don't understand why this condition should be negated but it works, and is opposite otherwise...
+                if (!graphics.IsFullScreen)
+                {
+                    screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                    screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                }
+                else
+                {
+                    screenWidth = defaultWidth;
+                    screenHeight = defaultHeight;
+                }
+                graphics.PreferredBackBufferHeight = screenHeight;
+                graphics.PreferredBackBufferWidth = screenWidth;
+                projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90), (float)screenWidth / screenHeight, 0.01f, 1000f);
+                graphics.ToggleFullScreen();
+            }
+
+            UpdateCamera(gameTime);
+
+            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions);
+
+            base.Update(gameTime);
+        }
+
+        protected void UpdateCamera(GameTime gameTime)
+        {
             // Gamepad camera controlls
             float gamePadRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
             float gamePadZoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
@@ -133,10 +182,6 @@ namespace Pong
 
             cameraPosition = new Vector3((float)(radius * System.Math.Cos(yaw)), 0, (float)(radius * System.Math.Sin(yaw)));
             view = Matrix.CreateLookAt(cameraPosition, new Vector3(0), Vector3.UnitY);
-
-            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions);
-
-            base.Update(gameTime);
         }
 
         /// <summary>
