@@ -30,7 +30,7 @@ namespace Pong
                 foreach (ModelMeshPart part in mesh.MeshParts)
                 {
                     part.Effect = effect;
-                    Matrix world = Matrix.CreateScale(this.scale * new Vector3(width, height, depth) / 2) * Matrix.CreateTranslation(position); 
+                    Matrix world = Matrix.CreateScale(this.scale * new Vector3(width, height, depth)) * Matrix.CreateTranslation(position); 
                     effect.Parameters["World"].SetValue(world);
                     effect.Parameters["View"].SetValue(view);
                     effect.Parameters["Projection"].SetValue(projection);

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Ocean.dds</SourceFile>
-  <SourceTime>2019-11-13T17:05:08.7045895-05:00</SourceTime>
-  <DestFile>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Ocean.xnb</DestFile>
-  <DestTime>2019-11-21T09:49:53.6772742-05:00</DestTime>
+  <SourceFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Ocean.dds</SourceFile>
+  <SourceTime>2019-12-03T14:32:44.7849168-05:00</SourceTime>
+  <DestFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Ocean.xnb</DestFile>
+  <DestTime>2019-12-04T12:45:34.893301-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-12-08T11:35:54-05:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

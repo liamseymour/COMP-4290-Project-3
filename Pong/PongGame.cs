@@ -12,11 +12,6 @@ namespace Pong
     {
         private Vector3 fieldDimentions = new Vector3(20, 20, 40);
 
-        Vector3 cameraPosition = new Vector3(0, 0, 50);
-        Vector3 cameraUp = new Vector3(0, 1, 0);
-        Vector3 cameraForward = new Vector3(0, 0, -1);
-        Vector3 cameraRight = new Vector3(1, 0, 0);
-
         private Hashtable shapes; // Reference for shapes i.e. all objects composing the game. 
         private Hashtable models; // Model reference
         private Hashtable textures; // Texture reference
@@ -28,11 +23,10 @@ namespace Pong
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-
-        /* ||||||| TEMP CAMERA CONTROLS ||||||| */
+        // Camera
         float yaw = 0; // angle that camera has rotated on the y-axis
-        float pitch = 0; // angle that camera has rotated on the x-axis
-        /* ||||||| END TEMP CAMERA CONTROLS ||||||| */
+        float radius = 40f;
+        Vector3 cameraPosition;
 
         public PongGame()
         {
@@ -53,11 +47,7 @@ namespace Pong
         /// </summary>
         protected override void Initialize()
         {
-            // Camera
-            cameraPosition = new Vector3(0, 0, 50);
-            cameraForward = -Vector3.UnitZ;
-            cameraUp = Vector3.UnitY;
-
+            cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
         }
 
@@ -90,12 +80,12 @@ namespace Pong
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
                 new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
             shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1, 1, 1, 1), 1/3f, new Vector3(0, 0, 10), null));
-            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), 1, fieldDimentions, (Effect)effects["simple"]));
+            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), .5f, fieldDimentions, null));
             Vector3 paddleDimentions = new Vector3(2, 2, .2f);
             shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, fieldDimentions.Z / 2 + paddleDimentions.Z / 2), 
-                new Color(1, 1, 1, 1), 1, paddleDimentions, (Effect)effects["directional"]));
+                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
             shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, -fieldDimentions.Z / 2 -paddleDimentions.Z / 2),
-                new Color(1, 1, 1, 1), 1, paddleDimentions, (Effect)effects["directional"]));
+                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
 
         }
 
@@ -118,40 +108,33 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            /* ||||||| TEMP CAMERA CONTROLS ||||||| */
+            // Gamepad camera controlls
+            float gamePadRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
+            float gamePadZoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
+            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+                float x = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X;
+                float y = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y;
+                yaw += gamePadRotationFactor * x;
+                radius = MathHelper.Clamp(radius - gamePadZoomFactor * y, 10, 150);
+            }
             // Camera rotation using arrow keys
-            float rotationFactor = 0.02f; // Rotation "sensitivity"
+            float keybRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
+            float keybZoomFactor = 40f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Zoom sensitivity
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                pitch += rotationFactor;
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                pitch -= rotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                yaw -= rotationFactor;
+                yaw -= keybRotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                yaw += rotationFactor;
+                yaw += keybRotationFactor;
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                radius = MathHelper.Clamp(radius - keybZoomFactor, 10, 150);
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                radius = MathHelper.Clamp(radius + keybZoomFactor, 10, 150);
 
-            // Apply Rotations
-            Matrix cameraRotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, 0);
+            cameraPosition = new Vector3((float)(radius * System.Math.Cos(yaw)), 0, (float)(radius * System.Math.Sin(yaw)));
+            view = Matrix.CreateLookAt(cameraPosition, new Vector3(0), Vector3.UnitY);
 
-            Vector3 newForward = Vector3.Transform(cameraForward, cameraRotation);
-            Vector3 newUp = Vector3.Transform(cameraUp, cameraRotation);
-            Vector3 newRight = Vector3.Transform(cameraRight, cameraRotation);
-
-            // Movement on WASD
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(newForward));
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(-newForward));
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(-newRight));
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                cameraPosition = Vector3.Transform(cameraPosition, Matrix.CreateTranslation(newRight));
-
-            view = Matrix.CreateLookAt(cameraPosition, cameraPosition + newForward, newUp);
-            /* ||||||| END TEMP CAMERA CONTROLS ||||||| */
-
-            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds);
+            ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions);
 
             base.Update(gameTime);
         }

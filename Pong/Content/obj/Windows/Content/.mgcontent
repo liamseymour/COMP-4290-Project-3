@@ -4,12 +4,12 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/cube.fbx</File>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Directional.fx</File>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Ocean.dds</File>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Simple.fx</File>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/Skybox.fx</File>
-    <File>C:/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Projects/COMP-4290-Project-3/Pong/Content/sphere.fbx</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/cube.fbx</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Directional.fx</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Ocean.dds</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Simple.fx</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Skybox.fx</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/sphere.fbx</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

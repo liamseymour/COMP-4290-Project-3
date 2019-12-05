@@ -45,7 +45,7 @@ namespace Pong
                     effect.DirectionalLight0.SpecularColor = new Vector3(1);
                     effect.AmbientLightColor = new Vector3(0.1484375f, 0.1484375f, 0.12890625f); // Dark yellow
                     
-                    effect.World = Matrix.CreateTranslation(position) * Matrix.CreateScale(scale);
+                    effect.World = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
                     effect.View = view;
                     effect.Projection = projection;
                 }
