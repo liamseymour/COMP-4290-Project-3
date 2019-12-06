@@ -1,7 +1,7 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/cube.fbx","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/cube.xnb","ModelProcessor","ModelContent",15408,907,0.9980036
 "C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Directional.fx","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Directional.xnb","EffectProcessor","CompiledEffectContent",1220,2022,0.3350695
-"C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Font.spritefont","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Font.xnb","FontDescriptionProcessor","SpriteFontContent",2008,70673,0.3382218
+"C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Font.spritefont","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Font.xnb","FontDescriptionProcessor","SpriteFontContent",2068,70673,0.3500615
 "C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Ocean.dds","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Ocean.xnb","TextureProcessor","TextureCubeContent",6291584,6291559,0.3747872
 "C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Point.fx","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Point.xnb","EffectProcessor","CompiledEffectContent",1976,3062,0.3276914
 "C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Simple.fx","C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Simple.xnb","EffectProcessor","CompiledEffectContent",991,1793,0.2652511

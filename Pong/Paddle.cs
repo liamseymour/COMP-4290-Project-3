@@ -25,9 +25,9 @@ namespace Pong
 
         public void Update(float elapsedMilliseconds)
         {
-            int x = 0;
-            int y = 0;
-            
+            float x = 0;
+            float y = 0;
+
             if (Keyboard.GetState().IsKeyDown(Keys.A)) // Paddle Movement Left
             {
                 x -= 1;
@@ -38,16 +38,22 @@ namespace Pong
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W)) // Paddle Movement Up
             {
- 
                 y += 1;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S)) // Paddle Movement Down
             {
-                
                 y -= 1;
             }
 
-            if(x != 0 && y != 0) // Normalizes speed if two directional buttons are held at once
+            // Gamepad input
+            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+                x = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X;
+                y = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y;
+            }
+
+
+            if (x != 0 && y != 0) // Normalizes speed if two directional buttons are held at once
             {
                 this.position += (y * Vector3.UnitY + x * Vector3.UnitX) * elapsedMilliseconds * SPEED / (float)Math.Sqrt(2);
             }else
