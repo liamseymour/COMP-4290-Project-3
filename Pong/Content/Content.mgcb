@@ -45,6 +45,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Font.spritefont
 
+#begin FontSmall.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:FontSmall.spritefont
+
 #begin Ocean.dds
 /importer:TextureImporter
 /processor:TextureProcessor

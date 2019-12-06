@@ -25,6 +25,7 @@ namespace Pong
 
         // Game state
         Vector3 paddleDimentions;
+        bool gameComplete;
 
         // Camera
         float yaw; // angle that camera has rotated on the y-axis
@@ -40,7 +41,8 @@ namespace Pong
         int opponentPoints = 0;
 
         // fonts
-        private SpriteFont font;
+        private SpriteFont fontLarge;
+        private SpriteFont fontSmall;
         private BasicEffect fontEffect;
 
 
@@ -59,6 +61,7 @@ namespace Pong
             // Game state
             fieldDimentions = new Vector3(20, 20, 40);
             paddleDimentions = new Vector3(2, 2, .2f);
+            gameComplete = false;
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace Pong
             int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.ApplyChanges();
@@ -122,7 +125,8 @@ namespace Pong
                 new Color(0f, 0f, .5f, 1f), paddleDimentions, (Effect)effects["point"]));
 
             // fonts
-            font = Content.Load<SpriteFont>("Font");
+            fontLarge = Content.Load<SpriteFont>("Font");
+            fontSmall = Content.Load<SpriteFont>("FontSmall");
             fontEffect = new BasicEffect(GraphicsDevice);
 
         }
@@ -171,25 +175,42 @@ namespace Pong
 
             UpdateCamera(gameTime);
 
-            Vector3 paddleDimentions = new Vector3(2, 2, .2f);
-            bool ballOutOfBounds = ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions, paddleDimentions, ((Paddle)shapes["player_paddle"]).position, ((Paddle)shapes["opponent_paddle"]).position);
-            Ball ball = ((Ball)shapes["ball"]);
-            if (ballOutOfBounds)
+            if (!gameComplete)
             {
-                if (ball.position.Z > 0) // Player goal
+                Vector3 paddleDimentions = new Vector3(2, 2, .2f);
+                bool ballOutOfBounds = ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions, paddleDimentions, ((Paddle)shapes["player_paddle"]).position, ((Paddle)shapes["opponent_paddle"]).position);
+                Ball ball = ((Ball)shapes["ball"]);
+                if (ballOutOfBounds)
                 {
-                    ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, -25);
-                    opponentPoints++;
+                    if (ball.position.Z > 0) // Player goal
+                    {
+                        ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, -25);
+                        opponentPoints++;
+                    }
+                    else // Ai goal
+                    {
+                        ball.Velocity = new Vector3(0, 0, 25);
+                        playerPoints++;
+                    }
+                    ball.position = new Vector3(0);
                 }
-                else // Ai goal
-                {
-                    ball.Velocity = new Vector3(0, 0, 25);
-                    playerPoints++;
-                }
+                ((Paddle)shapes["player_paddle"]).Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            } 
+            else
+            {
+                Ball ball = ((Ball)shapes["ball"]);
                 ball.position = new Vector3(0);
+                ball.Velocity = new Vector3(0);
+                if (GamePad.GetState(PlayerIndex.One).IsConnected && GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A)
+                    || Keyboard.GetState().IsKeyDown(Keys.Enter)){
+                    playerPoints = 0;
+                    opponentPoints = 0;
+                    ((Paddle)shapes["player_paddle"]).position = new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z);
+                    ((Paddle)shapes["opponent_paddle"]).position = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
+                    ball.Velocity = new Vector3(0, 0, 25);
+                    gameComplete = false;
+                }
             }
-            ((Paddle)shapes["player_paddle"]).Update(gameTime.ElapsedGameTime.Milliseconds/1000f);
-
 
             base.Update(gameTime);
         }
@@ -238,15 +259,29 @@ namespace Pong
             ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, Color.White, cameraPosition);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
 
-            spriteBatch.DrawString(font, "Player Score: " + playerPoints, new Vector2(100, 100), Color.Black);
-            spriteBatch.DrawString(font, "Opponent Score: " + opponentPoints, new Vector2(graphics.PreferredBackBufferWidth - 500, 100), Color.Black);
+            SpriteFont font;
+            if (graphics.IsFullScreen)
+                font = fontLarge;
+            else
+                font = fontSmall;
+
+            spriteBatch.DrawString(font, "Player Score: " + playerPoints, new Vector2(graphics.PreferredBackBufferWidth / 10, 100), Color.Black);
+            spriteBatch.DrawString(font, "Opponent Score: " + opponentPoints, new Vector2(graphics.PreferredBackBufferWidth - (graphics.PreferredBackBufferWidth / 3) , 100), Color.Black);
             if(playerPoints == 5)
             {
-                spriteBatch.DrawString(font, "Player Won!" + playerPoints, new Vector2(100, 100), Color.Black);
+                spriteBatch.DrawString(font, "Player Won!", new Vector2(graphics.PreferredBackBufferWidth / 10, 200), Color.Black);
             }
             if(opponentPoints == 5)
             {
-                spriteBatch.DrawString(font, "Opponent Won!", new Vector2((graphics.PreferredBackBufferWidth /2) - 150, graphics.PreferredBackBufferHeight /2 - 150), Color.Black);
+                spriteBatch.DrawString(font, "Opponent Won!", new Vector2(graphics.PreferredBackBufferWidth - (graphics.PreferredBackBufferWidth / 3), 200), Color.Black);
+            }
+            if (opponentPoints == 5 || playerPoints == 5)
+            {
+                gameComplete = true;
+                if (GamePad.GetState(PlayerIndex.One).IsConnected)
+                    spriteBatch.DrawString(font, "Game over! Press enter to play again, press A to quit.", new Vector2(graphics.PreferredBackBufferWidth / 5, graphics.PreferredBackBufferHeight / 2), Color.Black);
+                else
+                    spriteBatch.DrawString(font, "Game over! Press enter to play again, press escape to quit.", new Vector2(graphics.PreferredBackBufferWidth / 5, graphics.PreferredBackBufferHeight / 2), Color.Black);
             }
 
             spriteBatch.End();
