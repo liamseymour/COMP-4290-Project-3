@@ -20,8 +20,8 @@ namespace Pong
         private VertexBuffer vertexBuffer;
         private IndexBuffer indexBuffer;
 
-        public Field(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, Vector3 dimentions, Effect effect) 
-            : base(graphics, model, position, color, scale, effect)
+        public Field(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, Vector3 dimentions, Effect effect) 
+            : base(graphics, model, position, color, 1, effect)
         {
             this.height = dimentions.Y;
             this.width = dimentions.X;

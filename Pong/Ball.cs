@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Pong
 {
     public class Ball : Shape
@@ -47,34 +48,45 @@ namespace Pong
             Vector3 deltaPosition = elapsedMilliseconds / 1000 * velocity;
             float buffer = .2f;
             // Detect collisions
-            if (position.X + deltaPosition.X + radius > fieldDimentions.X / 2 - buffer || position.X + deltaPosition.X - radius < -fieldDimentions.X / 2 + buffer)
-                velocity = Vector3.Multiply(velocity, new Vector3(-1, 1, 1));
+            if (position.X + deltaPosition.X + radius > fieldDimentions.X - buffer)
+                velocity.X = -Math.Abs(velocity.X);
+            else if (position.X + deltaPosition.X - radius < -fieldDimentions.X + buffer)
+                velocity.X = Math.Abs(velocity.X);
+            if (position.Y + deltaPosition.Y + radius > fieldDimentions.Y - buffer)
+                velocity.Y = -Math.Abs(velocity.Y);
+            else if (position.Y + deltaPosition.Y - radius < -fieldDimentions.Y + buffer)
+                velocity.Y = Math.Abs(velocity.Y);
 
-            if (position.Y + deltaPosition.Y + radius > fieldDimentions.Y / 2 - buffer || position.Y + deltaPosition.Y - radius < -fieldDimentions.Y / 2 + buffer)
-                velocity = Vector3.Multiply(velocity, new Vector3(1, -1, 1));
-
-            // Here we need to check if the ball hit the paddle and if it did how to update it's velocity
-            if (position.Z + deltaPosition.Z + radius > fieldDimentions.Z / 2 - buffer || position.Z + deltaPosition.Z - radius < -fieldDimentions.Z / 2 + buffer)
+            if (position.Z + deltaPosition.Z - radius < -fieldDimentions.Z + buffer)
             {
-                // Who's paddle is relavent to check?
-                // We can tell by checking what side the ball is on
-                Vector3 paddlePosition;
-                if (position.Z > 0) // AI
-                    paddlePosition = enemyPaddlePosition;
-                else // Player
-                    paddlePosition = playerPaddlePosition;
+                float deltaX = position.X - enemyPaddlePosition.X;
+                float deltaY = position.Y - enemyPaddlePosition.Y;
 
-                float deltaX = position.X - paddlePosition.X;
-                float deltaY = position.Y - paddlePosition.Y;
-
-                if (deltaX >= -paddleDimentions.X / 2f && deltaX <= paddleDimentions.X / 2f
-                     && deltaY >= -paddleDimentions.Y / 2f && deltaY <= paddleDimentions.Y / 2f)
+                if (position.X <= enemyPaddlePosition.X + paddleDimentions.X && position.X >= enemyPaddlePosition.X - paddleDimentions.X
+                    && position.Y <= enemyPaddlePosition.Y + paddleDimentions.Y && position.Y >= enemyPaddlePosition.Y - paddleDimentions.Y)
                 {
                     Vector3 direction = Vector3.Normalize(velocity);
                     direction += new Vector3(deltaX, deltaY, 0);
                     direction = Vector3.Normalize(direction);
                     velocity = direction * speed;
-                    velocity = Vector3.Multiply(velocity, new Vector3(1, 1, -1));
+                    velocity.Z = Math.Abs(velocity.Z);
+                }
+                else
+                    outOfBounds = true;
+            }
+            else if (position.Z + deltaPosition.Z + radius > fieldDimentions.Z - buffer)
+            { 
+                float deltaX = position.X - playerPaddlePosition.X;
+                float deltaY = position.Y - playerPaddlePosition.Y;
+
+                if (position.X <= playerPaddlePosition.X + paddleDimentions.X && position.X >= playerPaddlePosition.X - paddleDimentions.X
+                    && position.Y <= playerPaddlePosition.Y + paddleDimentions.Y && position.Y >= playerPaddlePosition.Y - paddleDimentions.Y)
+                {
+                    Vector3 direction = Vector3.Normalize(velocity);
+                    direction += new Vector3(deltaX, deltaY, 0);
+                    direction = Vector3.Normalize(direction);
+                    velocity = direction * speed;
+                    velocity.Z = -Math.Abs(velocity.Z);
                 }
                 else
                     outOfBounds = true;

@@ -10,7 +10,7 @@ namespace Pong
     /// </summary>
     public class PongGame : Game
     {
-        
+        private Vector3 fieldDimentions = new Vector3(20, 20, 40);
 
         private Hashtable shapes; // Reference for shapes i.e. all objects composing the game. 
         private Hashtable models; // Model reference
@@ -24,9 +24,6 @@ namespace Pong
         SpriteBatch spriteBatch;
 
         // Game state
-        Vector3 playerPaddlePosition;
-        Vector3 aiPaddlePosition;
-        Vector3 fieldDimentions;
         Vector3 paddleDimentions;
 
         // Camera
@@ -36,7 +33,16 @@ namespace Pong
 
         // Screen
         int defaultWidth = 800;
-        int defaultHeight = 450;
+        int defaultHeight = 480;
+
+        // points
+        int playerPoints = 0;
+        int opponentPoints = 0;
+
+        // fonts
+        private SpriteFont font;
+        private BasicEffect fontEffect;
+
 
         public PongGame()
         {
@@ -48,13 +54,11 @@ namespace Pong
 
             // Camera
             yaw = 0;
-            radius = 40f;
+            radius = 80f;
 
             // Game state
             fieldDimentions = new Vector3(20, 20, 40);
             paddleDimentions = new Vector3(2, 2, .2f);
-            playerPaddlePosition = new Vector3(.5f, .5f, -fieldDimentions.Z / 2f - paddleDimentions.Z);
-            aiPaddlePosition = new Vector3(0, 0, fieldDimentions.Z / 2f + paddleDimentions.Z);
         }
 
         /// <summary>
@@ -69,15 +73,15 @@ namespace Pong
             int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.ApplyChanges();
 
             // Matrix data
-            view = Matrix.CreateLookAt(new Vector3(0, 0, 50), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            view = Matrix.CreateLookAt(new Vector3(0, 0, 100), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90), (float)screenWidth/ screenHeight, 0.01f, 1000f);
-
+            
         }
 
         /// <summary>
@@ -108,13 +112,18 @@ namespace Pong
             // Shapes
             shapes = new Hashtable();
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
-                new Color(.8f, .8f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
-            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1f, 1f, 1f, 1f), 1/3f, new Vector3(0, 0, 10), (Effect)effects["simple"]));
-            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), .5f, fieldDimentions, null));
-            shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], playerPaddlePosition, 
-                new Color(.5f, 0, 0, 1), .5f, paddleDimentions, (Effect)effects["point"]));
-            shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], aiPaddlePosition,
-                new Color(0, 0, .5f, 1), .5f, paddleDimentions, (Effect)effects["point"]));
+                new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
+            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1f, 1f, 1f, 1f), 1/3f, new Vector3(0, 0, 25), (Effect)effects["simple"]));
+            shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), fieldDimentions, null));
+            Vector3 paddleDimentions = new Vector3(2, 2, .2f);
+            shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z), 
+                new Color(.5f, 0f, 0f, 1f), paddleDimentions, (Effect)effects["point"]));
+            shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, -fieldDimentions.Z -paddleDimentions.Z),
+                new Color(0f, 0f, .5f, 1f), paddleDimentions, (Effect)effects["point"]));
+
+            // fonts
+            font = Content.Load<SpriteFont>("Font");
+            fontEffect = new BasicEffect(GraphicsDevice);
 
         }
 
@@ -163,19 +172,25 @@ namespace Pong
             UpdateCamera(gameTime);
 
             Vector3 paddleDimentions = new Vector3(2, 2, .2f);
-            bool ballOutOfBounds = ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions, paddleDimentions, playerPaddlePosition, aiPaddlePosition);
+            bool ballOutOfBounds = ((Ball)shapes["ball"]).Update(gameTime.ElapsedGameTime.Milliseconds, fieldDimentions, paddleDimentions, ((Paddle)shapes["player_paddle"]).position, ((Paddle)shapes["opponent_paddle"]).position);
+            Ball ball = ((Ball)shapes["ball"]);
             if (ballOutOfBounds)
             {
-                if (((Ball)shapes["ball"]).position.Z > 0) // Player goal
+                if (ball.position.Z > 0) // Player goal
                 {
-                    ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, -10);
+                    ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, -25);
+                    opponentPoints++;
                 }
                 else // Ai goal
                 {
-                    ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, 10);
+                    ball.Velocity = new Vector3(0, 0, 25);
+                    playerPoints++;
                 }
-                ((Ball)shapes["ball"]).position = new Vector3(0);
+                ball.position = new Vector3(0);
             }
+            ((Paddle)shapes["player_paddle"]).Update(gameTime.ElapsedGameTime.Milliseconds/1000f);
+
+
             base.Update(gameTime);
         }
 
@@ -189,7 +204,7 @@ namespace Pong
                 float x = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X;
                 float y = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y;
                 yaw += gamePadRotationFactor * x;
-                radius = MathHelper.Clamp(radius - gamePadZoomFactor * y, 10, 150);
+                radius = MathHelper.Clamp(radius - gamePadZoomFactor * y, 20, 300);
             }
             // Camera rotation using arrow keys
             float keybRotationFactor = 1.7f * gameTime.ElapsedGameTime.Milliseconds / 1000f; // Rotation sensitivity
@@ -200,9 +215,9 @@ namespace Pong
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 yaw += keybRotationFactor;
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                radius = MathHelper.Clamp(radius - keybZoomFactor, 10, 150);
+                radius = MathHelper.Clamp(radius - keybZoomFactor, 20, 300);
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                radius = MathHelper.Clamp(radius + keybZoomFactor, 10, 150);
+                radius = MathHelper.Clamp(radius + keybZoomFactor, 20, 300);
 
             cameraPosition = new Vector3((float)(radius * System.Math.Cos(yaw)), 0, (float)(radius * System.Math.Sin(yaw)));
             view = Matrix.CreateLookAt(cameraPosition, new Vector3(0), Vector3.UnitY);
@@ -219,8 +234,26 @@ namespace Pong
             ((Skybox)shapes["skybox"]).Draw(view, projection, cameraPosition);
             ((Ball)shapes["ball"]).Draw(view, projection);
             ((Field)shapes["field"]).Draw(view, projection);
-            ((Paddle)shapes["player_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, new Color(255, 255, 255), cameraPosition);
-            ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, new Color(255, 255, 255), cameraPosition);
+            ((Paddle)shapes["player_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, Color.White, cameraPosition);
+            ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, Color.White, cameraPosition);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
+
+            spriteBatch.DrawString(font, "Player Score: " + playerPoints, new Vector2(100, 100), Color.Black);
+            spriteBatch.DrawString(font, "Opponent Score: " + opponentPoints, new Vector2(graphics.PreferredBackBufferWidth - 500, 100), Color.Black);
+            if(playerPoints == 5)
+            {
+                spriteBatch.DrawString(font, "Player Won!" + playerPoints, new Vector2(100, 100), Color.Black);
+            }
+            if(opponentPoints == 5)
+            {
+                spriteBatch.DrawString(font, "Opponent Won!", new Vector2((graphics.PreferredBackBufferWidth /2) - 150, graphics.PreferredBackBufferHeight /2 - 150), Color.Black);
+            }
+
+            spriteBatch.End();
+
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
             base.Draw(gameTime);
         }

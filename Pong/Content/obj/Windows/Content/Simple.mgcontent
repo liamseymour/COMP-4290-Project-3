@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Simple.fx</SourceFile>
-  <SourceTime>2019-12-05T20:03:12.7292866-05:00</SourceTime>
+  <SourceTime>2019-12-05T21:33:35.0357076-05:00</SourceTime>
   <DestFile>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/bin/Windows/Content/Simple.xnb</DestFile>
-  <DestTime>2019-12-05T20:06:04.198247-05:00</DestTime>
+  <DestTime>2019-12-06T15:21:08.9711284-05:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2018-12-08T11:35:54-05:00</ImporterTime>
   <Processor>EffectProcessor</Processor>
