@@ -85,8 +85,22 @@ namespace Pong
             return outOfBounds;
         }
 
-
-
-
+        public void Draw(Matrix view, Matrix projection)
+        {
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+                    part.Effect = effect;
+                    Matrix world = Matrix.CreateScale(this.scale) * Matrix.CreateTranslation(position);
+                    effect.Parameters["World"].SetValue(world);
+                    effect.Parameters["View"].SetValue(view);
+                    effect.Parameters["Projection"].SetValue(projection);
+                    effect.Parameters["WorldInverseTranspose"].SetValue(Matrix.Transpose(Matrix.Invert(mesh.ParentBone.Transform * world)));
+                    effect.Parameters["Color"].SetValue(color.ToVector3());
+                }
+                mesh.Draw();
+            }
+        }
     }
 }

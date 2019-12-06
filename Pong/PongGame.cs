@@ -102,18 +102,19 @@ namespace Pong
             effects = new Hashtable();
             effects.Add("skybox", Content.Load<Effect>("Skybox"));
             effects.Add("simple", Content.Load<Effect>("Simple"));
-            effects.Add("directional", Content.Load<Effect>("Directional"));
+            //effects.Add("directional", Content.Load<Effect>("Directional"));
+            effects.Add("point", Content.Load<Effect>("Point"));
 
             // Shapes
             shapes = new Hashtable();
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
-                new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
-            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1, 1, 1, 1), 1/3f, new Vector3(0, 0, 10), null));
+                new Color(.8f, .8f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
+            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1f, 1f, 1f, 1f), 1/3f, new Vector3(0, 0, 10), (Effect)effects["simple"]));
             shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), .5f, fieldDimentions, null));
             shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], playerPaddlePosition, 
-                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
+                new Color(.5f, 0, 0, 1), .5f, paddleDimentions, (Effect)effects["point"]));
             shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], aiPaddlePosition,
-                new Color(1, 1, 1, 1), .5f, paddleDimentions, (Effect)effects["directional"]));
+                new Color(0, 0, .5f, 1), .5f, paddleDimentions, (Effect)effects["point"]));
 
         }
 
@@ -218,8 +219,8 @@ namespace Pong
             ((Skybox)shapes["skybox"]).Draw(view, projection, cameraPosition);
             ((Ball)shapes["ball"]).Draw(view, projection);
             ((Field)shapes["field"]).Draw(view, projection);
-            ((Paddle)shapes["player_paddle"]).Draw(view, projection, new Vector3(1.4142f, 1.4142f, 1.4142f), new Color(0.9921875f, 0.9921875f, 0.8359375f));
-            ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, new Vector3(1.4142f, 1.4142f, 1.4142f), new Color(0.9921875f, 0.9921875f, 0.8359375f));
+            ((Paddle)shapes["player_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, new Color(255, 255, 255), cameraPosition);
+            ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, new Color(255, 255, 255), cameraPosition);
 
             base.Draw(gameTime);
         }

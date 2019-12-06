@@ -23,7 +23,7 @@ namespace Pong
             this.depth = dimentions.Z;
         }
 
-        public void Draw(Matrix view, Matrix projection, Vector3 lightDirection, Color lightColor)
+        public void Draw(Matrix view, Matrix projection, Vector3 lightPosition, Color lightColor, Vector3 cameraPosition)
         {
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -34,10 +34,11 @@ namespace Pong
                     effect.Parameters["World"].SetValue(world);
                     effect.Parameters["View"].SetValue(view);
                     effect.Parameters["Projection"].SetValue(projection);
+                    effect.Parameters["Camera"].SetValue(cameraPosition);
                     effect.Parameters["WorldInverseTranspose"].SetValue(Matrix.Transpose(Matrix.Invert(mesh.ParentBone.Transform * world)));
-                    effect.Parameters["DiffuseLightDirection"].SetValue(lightDirection);
-                    effect.Parameters["DiffuseColor"].SetValue(lightColor.ToVector3());
-                    
+                    effect.Parameters["LightPosition"].SetValue(lightPosition);
+                    effect.Parameters["LightColor"].SetValue(lightColor.ToVector3());
+                    effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
                 }
                 mesh.Draw();
             }

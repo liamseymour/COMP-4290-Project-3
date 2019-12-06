@@ -4,9 +4,6 @@ float4x4 Projection;
 float4x4 WorldInverseTranspose;
 float4 Color;
 
-static const float PI = 3.13159265f;
-
-
 struct VertexShaderInput {
 	float4 Position : POSITION0;
 	float3 Normal : NORMAL0;

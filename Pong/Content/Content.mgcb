@@ -50,6 +50,12 @@
 /processorParam:TextureFormat=Color
 /build:Ocean.dds
 
+#begin Point.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Point.fx
+
 #begin Simple.fx
 /importer:EffectImporter
 /processor:EffectProcessor
