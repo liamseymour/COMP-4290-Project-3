@@ -1,0 +1,5 @@
+1) Controller support - Joystick movement and camera control. Back exits. Start toggles fullscreen.
+2) Toggle fullscreen - F on keyboard and Start on gamepad toggles fullscreen.
+3) Sound effects.
+4) Music.
+5) Point light inside the ball.
