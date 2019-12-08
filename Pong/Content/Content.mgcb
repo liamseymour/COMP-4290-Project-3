@@ -70,6 +70,18 @@
 /processorParam:DebugMode=Auto
 /build:Point.fx
 
+#begin pong_hit_sound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pong_hit_sound.mp3
+
+#begin rolling_techno_background.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:rolling_techno_background.mp3
+
 #begin Simple.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -100,4 +112,10 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:sphere.fbx
+
+#begin win_sound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:win_sound.mp3
 

@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using System.Collections;
 
 namespace Pong
@@ -46,16 +44,6 @@ namespace Pong
         private SpriteFont fontLarge;
         private SpriteFont fontSmall;
         private BasicEffect fontEffect;
-
-        // Sounds
-        private Song backgroundSong;
-        private SoundEffect pongHitSound;
-        private SoundEffect winSound;
-        private const float VOLUME = 1.0f;
-        private const float PITCH = 0f;
-        private const float PAN = 0f;
-
-        private const float BALL_RADIUS = 1 / 3f;
 
 
         public PongGame()
@@ -124,19 +112,11 @@ namespace Pong
             //effects.Add("directional", Content.Load<Effect>("Directional"));
             effects.Add("point", Content.Load<Effect>("Point"));
 
-            // Music
-            backgroundSong = Content.Load<Song>("rolling_techno_background");
-            pongHitSound = Content.Load<SoundEffect>("pong_hit_sound");
-            winSound = Content.Load<SoundEffect>("win_sound");
-            MediaPlayer.Play(backgroundSong);
-            MediaPlayer.Volume = 0.5f;
-            MediaPlayer.IsRepeating = true;
-
             // Shapes
             shapes = new Hashtable();
             shapes.Add("skybox", new Skybox(graphics, (Model)models["cube"], cameraPosition,
                 new Color(1f, 1f, 1f, 1f), 500, (TextureCube)textures["skybox-ocean"], (Effect)effects["skybox"]));
-            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1f, 1f, 1f, 1f), BALL_RADIUS, new Vector3(0, 0, 25), (Effect)effects["simple"]));
+            shapes.Add("ball", new Ball(graphics, (Model)models["sphere"], new Vector3(0, 0, 0), new Color(1f, 1f, 1f, 1f), 1/3f, new Vector3(0, 0, 25), (Effect)effects["simple"]));
             shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), fieldDimentions, null));
             Vector3 paddleDimentions = new Vector3(2, 2, .2f);
             shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z), 
@@ -205,41 +185,22 @@ namespace Pong
                     if (ball.position.Z > 0) // Player goal
                     {
                         ((Ball)shapes["ball"]).Velocity = new Vector3(0, 0, -25);
-                        ((Paddle)shapes["player_paddle"]).position = new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z);
-                        ((Paddle)shapes["opponent_paddle"]).position = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
-                        ((Paddle)shapes["opponent_paddle"]).cpuLocation = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
                         opponentPoints++;
                     }
                     else // Ai goal
                     {
                         ball.Velocity = new Vector3(0, 0, 25);
-                        ((Paddle)shapes["player_paddle"]).position = new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z);
-                        ((Paddle)shapes["opponent_paddle"]).position = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
-                        ((Paddle)shapes["opponent_paddle"]).cpuLocation = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
                         playerPoints++;
                     }
                     ball.position = new Vector3(0);
                 }
                 ((Paddle)shapes["player_paddle"]).Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
-                if (ball.playerHit)
-                {
-                    pongHitSound.Play(VOLUME,PITCH,PAN);
-                    ((Paddle)shapes["opponent_paddle"]).CpuNewLocation(gameTime.ElapsedGameTime.Milliseconds / 1000f, ball.Velocity, ball.ballContactLocation,fieldDimentions, BALL_RADIUS);
-                    ball.playerHit = false;
-                }
-                if (ball.opponentHit)
-                {
-                    pongHitSound.Play(VOLUME, PITCH, PAN);
-                    ball.opponentHit = false;
-                }
-                ((Paddle)shapes["opponent_paddle"]).UpdateCPU(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             } 
             else
             {
                 Ball ball = ((Ball)shapes["ball"]);
                 ball.position = new Vector3(0);
                 ball.Velocity = new Vector3(0);
-                //winSound.Play();
                 if (GamePad.GetState(PlayerIndex.One).IsConnected && GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A)
                     || Keyboard.GetState().IsKeyDown(Keys.Enter)){
                     playerPoints = 0;
@@ -248,7 +209,6 @@ namespace Pong
                     ((Paddle)shapes["opponent_paddle"]).position = new Vector3(0, 0, -fieldDimentions.Z - paddleDimentions.Z);
                     ball.Velocity = new Vector3(0, 0, 25);
                     gameComplete = false;
-                    MediaPlayer.Resume();
                 }
             }
 
@@ -319,10 +279,9 @@ namespace Pong
             {
                 gameComplete = true;
                 if (GamePad.GetState(PlayerIndex.One).IsConnected)
-                    spriteBatch.DrawString(font, "Game over! Press enter to play again, press A to quit.", new Vector2(graphics.PreferredBackBufferWidth / 5, graphics.PreferredBackBufferHeight / 2), Color.Black);
+                    spriteBatch.DrawString(font, "Game over! Press A to play again, press Back to quit.", new Vector2(graphics.PreferredBackBufferWidth / 5, graphics.PreferredBackBufferHeight / 2), Color.Black);
                 else
                     spriteBatch.DrawString(font, "Game over! Press enter to play again, press escape to quit.", new Vector2(graphics.PreferredBackBufferWidth / 5, graphics.PreferredBackBufferHeight / 2), Color.Black);
-                MediaPlayer.Pause();
             }
 
             spriteBatch.End();

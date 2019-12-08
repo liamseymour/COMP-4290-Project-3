@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 
@@ -25,13 +24,9 @@ namespace Pong
                 velocity = value;
             }
         }
-        public Vector3 ballContactLocation { get; set; }
-        public bool playerHit { get; set; }
-        public bool opponentHit { get; set; }
         float speed;
         float radius;
-        public Ball(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, Vector3 velocity, Effect effect) 
-            : base(graphics, model, position, color, scale, effect)
+        public Ball(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, float scale, Vector3 velocity, Effect effect) : base(graphics, model, position, color, scale, effect)
         {
             this.velocity = velocity;
             this.radius = scale;
@@ -50,8 +45,6 @@ namespace Pong
         public bool Update(float elapsedMilliseconds, Vector3 fieldDimentions, Vector3 paddleDimentions, Vector3 playerPaddlePosition, Vector3 enemyPaddlePosition)
         {
             bool outOfBounds = false;
-            playerHit = false;
-            opponentHit = false;
             Vector3 deltaPosition = elapsedMilliseconds / 1000 * velocity;
             float buffer = .2f;
             // Detect collisions
@@ -72,7 +65,6 @@ namespace Pong
                 if (position.X <= enemyPaddlePosition.X + paddleDimentions.X && position.X >= enemyPaddlePosition.X - paddleDimentions.X
                     && position.Y <= enemyPaddlePosition.Y + paddleDimentions.Y && position.Y >= enemyPaddlePosition.Y - paddleDimentions.Y)
                 {
-                    opponentHit = true;
                     Vector3 direction = Vector3.Normalize(velocity);
                     direction += new Vector3(deltaX, deltaY, 0);
                     direction = Vector3.Normalize(direction);
@@ -90,8 +82,6 @@ namespace Pong
                 if (position.X <= playerPaddlePosition.X + paddleDimentions.X && position.X >= playerPaddlePosition.X - paddleDimentions.X
                     && position.Y <= playerPaddlePosition.Y + paddleDimentions.Y && position.Y >= playerPaddlePosition.Y - paddleDimentions.Y)
                 {
-                    ballContactLocation = position;
-                    playerHit = true;
                     Vector3 direction = Vector3.Normalize(velocity);
                     direction += new Vector3(deltaX, deltaY, 0);
                     direction = Vector3.Normalize(direction);
