@@ -88,7 +88,7 @@ namespace Pong
             int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.ApplyChanges();
@@ -116,6 +116,8 @@ namespace Pong
             // Load Textures
             textures = new Hashtable();
             textures.Add("skybox-ocean", Content.Load<TextureCube>("Ocean"));
+            textures.Add("red", Content.Load<Texture2D>("red"));
+            textures.Add("blue-metal", Content.Load<Texture2D>("blue_metal"));
 
             // Load shaders / effects
             effects = new Hashtable();
@@ -140,9 +142,9 @@ namespace Pong
             shapes.Add("field", new Field(graphics, (Model)models["cube"], new Vector3(0), new Color(1, 1, 1, 1), fieldDimentions, null));
             Vector3 paddleDimentions = new Vector3(2, 2, .2f);
             shapes.Add("player_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, fieldDimentions.Z + paddleDimentions.Z), 
-                new Color(.5f, 0f, 0f, 1f), paddleDimentions, (Effect)effects["point"]));
+                new Color(.5f, 0f, 0f, 1f), paddleDimentions, (Effect)effects["point"], (Texture2D)textures["red"]));
             shapes.Add("opponent_paddle", new Paddle(graphics, (Model)models["cube"], new Vector3(0, 0, -fieldDimentions.Z -paddleDimentions.Z),
-                new Color(0f, 0f, .5f, 1f), paddleDimentions, (Effect)effects["point"]));
+                new Color(0f, 0f, .5f, 1f), paddleDimentions, (Effect)effects["point"], (Texture2D)textures["blue-metal"]));
 
             // fonts
             fontLarge = Content.Load<SpriteFont>("Font");

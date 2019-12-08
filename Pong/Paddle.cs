@@ -16,11 +16,13 @@ namespace Pong
         public Vector3 cpuLocation { get; set; }
         private const float SPEED = 10f;
         private const float CPU_SPEED = 3f;
+        private Texture2D texture;
 
-        public Paddle(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, Vector3 dimensions, Effect effect)
+        public Paddle(GraphicsDeviceManager graphics, Model model, Vector3 position, Color color, Vector3 dimensions, Effect effect, Texture2D texture)
                 : base(graphics, model, position, color, 1, effect)
         {
             this.dimensions = dimensions;
+            this.texture = texture;
             cpuLocation = position;  
         }
 
@@ -300,7 +302,6 @@ namespace Pong
                 {
                     t = ((-fieldDimensions.X + buffer + radius) - startingPoint.X) / velocity.X;
                     nextPoint = startingPoint + (t * velocity);
-                    Console.WriteLine("Our velocity is: " + velocity.X);
                     if (Math.Abs(velocity.X) == Math.Abs(velocity.Y))
                     {
                         velocity.X *= -1;
@@ -374,7 +375,7 @@ namespace Pong
                     effect.Parameters["WorldInverseTranspose"].SetValue(Matrix.Transpose(Matrix.Invert(mesh.ParentBone.Transform * world)));
                     effect.Parameters["LightPosition"].SetValue(lightPosition);
                     effect.Parameters["LightColor"].SetValue(lightColor.ToVector3());
-                    effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+                    effect.Parameters["ModelTexture"].SetValue(texture);
                 }
                 mesh.Draw();
             }
