@@ -32,12 +32,6 @@
 /processorParam:TextureFormat=Compressed
 /build:cube.obj
 
-#begin Directional.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Directional.fx
-
 #begin Font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -64,6 +58,25 @@
 /processorParam:TextureFormat=Color
 /build:Ocean.dds
 
+#begin Plane.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Plane.fbx
+
 #begin Point.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -81,6 +94,18 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:rolling_techno_background.mp3
+
+#begin shadow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shadow.png
 
 #begin Simple.fx
 /importer:EffectImporter

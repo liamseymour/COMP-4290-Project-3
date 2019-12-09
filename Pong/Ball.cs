@@ -74,7 +74,7 @@ namespace Pong
                 {
                     opponentHit = true;
                     Vector3 direction = Vector3.Normalize(velocity);
-                    direction += new Vector3(deltaX, deltaY, 0);
+                    direction += new Vector3(-deltaX, deltaY, 0);
                     direction = Vector3.Normalize(direction);
                     velocity = direction * speed;
                     velocity.Z = Math.Abs(velocity.Z);

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Collections;
+using System;
 
 namespace Pong
 {
@@ -88,7 +89,7 @@ namespace Pong
             int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             cameraPosition = new Vector3(0, 0, radius);
             base.Initialize();
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.ApplyChanges();
@@ -112,12 +113,14 @@ namespace Pong
             models = new Hashtable();
             models.Add("sphere", Content.Load<Model>("sphere"));
             models.Add("cube", Content.Load<Model>("cube"));
+            models.Add("plane", Content.Load<Model>("Plane"));
 
             // Load Textures
             textures = new Hashtable();
             textures.Add("skybox-ocean", Content.Load<TextureCube>("Ocean"));
             textures.Add("red", Content.Load<Texture2D>("red"));
             textures.Add("blue-metal", Content.Load<Texture2D>("blue_metal"));
+            textures.Add("shadow", Content.Load<Texture2D>("shadow"));
 
             // Load shaders / effects
             effects = new Hashtable();
@@ -300,6 +303,27 @@ namespace Pong
             ((Paddle)shapes["player_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, Color.White, cameraPosition);
             ((Paddle)shapes["opponent_paddle"]).Draw(view, projection, ((Ball)shapes["ball"]).position, Color.White, cameraPosition);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
+
+            // Draw a shadow for the ball
+            Vector3 position = ((Ball)shapes["ball"]).position;
+            position.Y = -fieldDimentions.Y;
+            Matrix scale = Matrix.CreateScale(Math.Max(1, .08f * Math.Abs(( (Ball)shapes["ball"]).position.Y + fieldDimentions.Y) ));
+            Matrix world = scale * Matrix.CreateRotationX(MathHelper.ToRadians(90)) * Matrix.CreateTranslation(position);
+            foreach (ModelMesh mesh in ((Model)models["plane"]).Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.LightingEnabled = false;
+                    effect.TextureEnabled = true;
+                    graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    effect.Texture = (Texture2D)textures["shadow"];
+                    effect.World = world;
+                    effect.View = view;
+                    effect.Projection = projection;
+                }
+
+                mesh.Draw();
+            }
 
             SpriteFont font;
             if (graphics.IsFullScreen)

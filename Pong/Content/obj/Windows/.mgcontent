@@ -5,13 +5,14 @@
   <Config />
   <SourceFiles>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/cube.obj</File>
-    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Directional.fx</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Font.spritefont</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/FontSmall.spritefont</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Ocean.dds</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Plane.fbx</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Point.fx</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/pong_hit_sound.mp3</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/rolling_techno_background.mp3</File>
+    <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/shadow.png</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Simple.fx</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Skybox.fx</File>
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/sphere.fbx</File>
@@ -20,6 +21,7 @@
     <File>C:/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/win_sound.mp3</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
